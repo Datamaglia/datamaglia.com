@@ -8,9 +8,11 @@ jQuery(document).ready(function($) {
     $(window).bind('scroll', function() {
          if ($(window).scrollTop() > 50) {
              $('#header').addClass('navbar-fixed-top');
+             $('.active').removeClass('white-nav');
          }
          else {
              $('#header').removeClass('navbar-fixed-top');
+             $('.active').addClass('white-nav');
          }
     });
    
