@@ -3,7 +3,7 @@
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
 <!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
 <head>
-    <title>Free Bootstrap Theme for Developers</title>
+    <title>Datamaglia - Guide</title>
     <!-- Meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -86,8 +86,10 @@
     <div class="container">
         <div class="docs-inner">
             <h2 class="title text-center">Datamaglia Recommendations: How it works</h2>
+
             <div class="block">
                 <h3 class="sub-title text-center">Why your app needs recommendations</h3>
+                <p>INSERT PREDICTED EDGE GRAPHIC</p>
                 <p>It is undeniable that apps are becoming <i>smarter</i>: mapping apps now show us traffic information, shopping apps predict which products we might want to purchase, and music apps show us new songs we might enjoy based on our previous listening habits. Users have come to expect these <i>smart</i> features in apps and the lack of these predictive features can often result in a missed download.</p>
                 <p>Providing your users with personalized recommendations can improve user engagement with your app and provide features your users will appreciate. Users are more likely to interact with a personalized experience tailored to their interests and preferences.</p>
                 <ul class="list-unstyled">
@@ -95,29 +97,45 @@
                     <li><strong>Commerce:</strong> Increase sales with personalized product recommendations based on purchase or viewing history.</li>
                     <li><strong>Content: </strong> Recommend news articles and other content based on user viewing history.</li>
                 </ul>
-
             </div><!--//block-->
 
             <div class="block">
                 <h3 class="sub-title text-center">Datamaglia recommendations</h3>
-                <p>Building out these features is often not the core competency of the development team, and can be a distraction for developers who would rather focus on building the core functionality of their app. By </p>
-
-                <p></p>
+                <p>Building out these features is often not the core competency of the development team, and can be a distraction for developers who would rather focus on building the core functionality of their app. Managing the data pipeline that is required to support these features requires devops resources. </p>
+                <p>Datamaglia Recommendations are provided as a service so there is no need to maintain extra servers, databases or implement complex machine learning algorithms.</p>
             </div><!--//block-->
 
             <div class="block">
                 <h3 class="sub-title text-center">How we generate recommendations</h3>
-                <img src="assets/images/user_user.png" class="img-responsive">
+
                 <p>By modeling </p>
+                <h4 class="sub-title text-center">Graph data model</h4>
+                <p>By modeling user preferences as a graph we are able to express user preferences in a concise and efficient format.</p>
+                <p>INSERT GRAPHIC OF USER PREFERNCES EXPRESSED AS A GRAPH</p>
+                <h4 class="sub-title text-center">Collaborative filtering</h4>
+
+                <h4 class="sub-title text-center">User defined data model</h4>
             </div><!--//block-->
 
             <div class="block">
                 <h3 class="sub-title text-center">Data integration: The Datamaglia difference</h3>
-                <p>If your documentation is very long you can host the full docs page (including FAQ etc) on GitHub and provide a Call to Action button below to direct users there.</p>
-                <p class="text-center">
-                    <a class="btn btn-cta-primary" href="tutorial.html">Get Started</a>
-                </p>
+                <p>Recommendations are more likely to be relevant if the algorithm is fed lots of data about user preferences. What if there simply isn't enough data to learn user preferences? This is the notorious cold-start problem that can often make user onboarding a painful and unpersonalized process. </p>
+                <p>Datamaglia Recommendations solves this issue by integrating user data across applications and across social networks. This means you can start delivering personalized recommendations to your users immediately without learning about their preferences in the context of your app, and deliever more relevant recommendations once you have collected some user preferences.</p>
             </div><!--//block-->
+
+            <div class="block">
+                <h3 class="sub-title text-center">Complex data models</h3>
+                <img src="assets/images/user_user.png" class="img-responsive">
+                <p>Often the data we would to like to use to express user preferences is rather complex. When represented as a graph we end up with several different types of edges ("LIKES", "FOLLOWS", etc) and several different node types ("User", "Item", etc). These types of networks are known as multi-modal networks, because there are multiple modes through which a relationship can be expressed. </p>
+                <p>Other recommendation systems are not able to make use of this rich data model and only capture a simple version of the data available. This means recommendations are not as relevant and interesting to your users. Datamaglia Recommendations algorithms are able to take these complex data models into account to always make sure the recommendations are relevant and interesting to your users. </p>
+            </div><!--//block-->
+
+            <p class="text-center">View the tutorial to see how to get started with Datamaglia recommendations.</p>
+
+            <p class="text-center">
+
+                <a class="btn btn-cta-primary" href="tutorial.html">Get Started</a>
+            </p>
 
         </div><!--//docs-inner-->
     </div><!--//container-->
