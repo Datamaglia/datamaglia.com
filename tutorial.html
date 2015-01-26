@@ -103,30 +103,52 @@
                 <p>These features are great, but we'd like to increase user engagement with our app by adding a way for users to discover new photos (other than by viewing recent photos). We'd like to be able to suggest new photos to users based on the photos they have previously favorited. </p>
                 <img class="img-responsive img-block" src="assets/images/picmaglia_detail.png">
 
+
+
             </div><!--//block-->
 
             <div class="block">
                 <h3 class="sub-title text-center">Configure app in Datamaglia Console</h3>
-                <p></p>
-
-                <img class="img-responsive img-block" src="assets/images/subgraph.png">
+                <p>The first thing we'll need to do is create a Datamaglia API token for our app. We do this in the <a href="http://console.datamaglia.com" target="_blank">Datamaglia Managment Console</a>. You'll need an invite code to create an account on the console. If you haven't signed up yet, you can sign up here for early access to the Datamaglia platform. </p>
 
                 <img class="img-responsive img-block" src="assets/images/console_1.png">
-                <img class="img-responsive img-block" src="assets/images/console_2.png">
+               <!-- <img class="img-responsive img-block" src="assets/images/console_2.png"> -->
+
+                <h4 class="sub-title">Create an application</h4>
+
+                <p>After logging into the management console we must first create an application.</p>
                 <img class="img-responsive img-block" src="assets/images/console_3.png">
+                <p>Each developer can create multiple applications. Here we will create an application called Picmaglia to represent our photobrowsing app.</p>
                 <img class="img-responsive img-block" src="assets/images/console_4.png">
                 <img class="img-responsive img-block" src="assets/images/console_5.png">
+
+                <h4 class="sub-title">Create a subgraph</h4>
+                <p>To make use of Datamaglia Recommendations each application must have at least one <strong>subgraph</strong>. As explained in the <a href="guide.html">How it works</a> section, Datamaglia models your application data as a graph. This allows us to build a powerful flexible representation of user preferences from which we can generate personalized recommendations. A subgraph defines the datatypes for a particlar (Source -[RELATIONSHIP]-> Target) combination.</p>
+                <img class="img-responsive img-block" src="assets/images/subgraph.png">
+                <p></p>
+                <p>The Source node of the subgraph is the data type of the object initating an action toward another object. With Picmaglia we are interested in using data about what photos a user has likes, therefore <i>User</i> is the source type for our subgraph. We will use a relationship type of <i>LIKES</i> to represent the action of favoriting. Finally, the Target type is <i>Photo</i> since that is the object the user is favoriting. </p>
+
                 <img class="img-responsive img-block" src="assets/images/console_6.png">
+
+                <p>It is important to note here that recommendations are generated for the <strong>target</strong> node. This is always the case, since we are effectively predicting edges in the graph to generate recommendations.</p>
+
                 <img class="img-responsive img-block" src="assets/images/console_7.png">
+
+
+                <h4 class="sub-title">Create an API token</h4>
+
+
                 <img class="img-responsive img-block" src="assets/images/console_8.png">
+
+                <p>Now we need to create an API key to allow us to make authenticated requests against the Datamaglia API. We can choose which permissions to grant the API token. It is important to note that each request made to the Datamaglia API must contain this API Token in the request header. View the <a href="//docs.datamaglia.com">API documentation</a> for more information.</p>
                 <img class="img-responsive img-block" src="assets/images/console_9.png">
-                <img class="img-responsive img-block" src="assets/images/console_10.png">
+                <!-- <img class="img-responsive img-block" src="assets/images/console_10.png"> -->
 
             </div>
 
             <div class="block">
                 <h3 class="sub-title text-center">Insert data</h3>
-                <p>Use the API to insert some data</p>
+                <p>Now that we've configured </p>
             </div>
 
             <div class="block">
