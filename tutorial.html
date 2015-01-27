@@ -61,8 +61,8 @@
                     <li class="nav-item"><a href="guide.html">How it works</a></li>
                     <li class="nav-item active white-nav"><a href="tutorial.html">Tutorial</a></li>
                     <li class="nav-item"><a href="//docs.datamaglia.com" target="_blank">API Documentation</a></li>
-                    <li class="nav-item"><a href="about.html">About</a></li>
-                    <li class="nav-item"><a href="//blog.datamaglia.com">Blog</a></li>
+                    <li class="nav-item"><a href="/">About</a></li>
+                    <li class="nav-item"><a href="/">Blog</a></li>
                     <!--<li class="active nav-item sr-only"><a class="scrollto" href="#promo">Home</a></li>
                     <li class="nav-item"><a class="scrollto" href="#about">About</a></li>
                     <li class="nav-item"><a class="scrollto" href="#features">Features</a></li>
@@ -148,73 +148,107 @@
 
             <div class="block">
                 <h3 class="sub-title text-center">Insert data</h3>
-                <p>Now that we've configured </p>
+                <p>Now that we've configured our application, subgraph and API token we can start using the Datamaglia API. </p>
+                <p>In order to generate recommendations for our users we first need to tell the Datamaglia Recommendations API about our user preferences. We do this by posting data describing the (User)-[LIKES]->(Photo) subgraph:</p>
+                <div class="code-block">
+                    <pre><code class="language-javascript">
+// POST /applications/{app}/subgraphs/{subgraph}/data/relationships/
+// BODY:
+{
+    "entities": [
+        {
+            "type": "Likes",
+            "weight": 1.0,
+            "source": {
+                "id": {
+                    "email": "johndoe@example.com"
+                }
+            },
+            "target": {
+                "id": {
+                    "imdb": "tt0398286"
+                }
+            }
+        },
+        {
+            "type": "Likes",
+            "source": {
+                "id": {
+                    "email": "johndoe@example.com"
+                }
+            },
+            "target": {
+                "id": {
+                    "imdb": "tt1217209"
+                }
+            }
+        }
+    ]
+}
+                    </code></pre>
             </div>
 
             <div class="block">
                 <h3 class="sub-title text-center">Query for recommendations</h3>
                 <p>Find some relevant photos</p>
+                <div class="code-block">
+                    <pre><code class="language-javascript">
+// POST /recommendations/{app}/subgraphs/{subgraph}/member{?limit,id}
+
+// RESPONSE
+{
+    "entities": [
+        {
+            "relationship": {
+                "type": "Likes",
+                "weight": 0.76,
+                "source": {
+                },
+                "target": {
+                    "id": {
+                        "imdb": "tt0398286"
+                    },
+                    "properties": {
+                        title: "Tangled"
+                    }
+                }
+            }
+        },
+        {
+            "relationship": {
+                "type": "Likes",
+                "weight": 0.89,
+                "source": {
+                },
+                "target": {
+                    "id": {
+                        "imdb": "tt1217209",
+                    },
+                    "properties": {
+                        "title": "Brave"
+                    }
+                }
+            }
+        }
+    ]
+}
+                    </code></pre>
+                </div>
             </div>
 
             <div class="block">
                 <h3 class="sub-title text-center">Coming soon</h3>
-                <p>Basic features</p>
+                <p>We've seen how to get started with a basic Datamaglic Recommender system for our photo browsing app. Next we will examine:</p>
                 <ul class="list-unstyled">
-                    <li><strong>Browse photos</strong></li>
-                    <li><strong>Favorite photos</strong></li>
-                    <li><strong>View favorited photos</strong></li>
-                    <li><strong>View recommended photos</strong> What photos is this user likely to be interested in?</li>
+                    <li><strong>More complex data model</strong></li>
+                    <li><strong>Recommending Users to follow</strong></li>
+                    <li><strong>Boosting recommendations with location data</strong></li>
                 </ul>
             </div>
 
 
 
-            <div class="block">
-                <h3 class="sub-title text-center">CSS</h3>
-                <p>Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus.</p>
 
-                <div class="code-block">
-                    <!--//Use Prismjs - http://prismjs.com/index.html#basic-usage -->
-                    <pre>
-    <code class="language-css">
-        /*
-        * Template Name: devAid - Responsive Website Template for developers
-        * Version: 1.0
-        * Author: Xiaoying Riley at 3rd Wave Media
-        * Website: http://themes.3rdwavemedia.com/
-        * Twitter: @3rdwave_themes
-        */
-        body {
-        font-family: 'Lato', arial, sans-serif;
-        color: #444444;
-        font-size: 16px;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
-        }
-    </code></pre>
-                </div><!--//code-block-->
-            </div><!--//block-->
-
-            <div class="block">
-                <h3 class="sub-title text-center">JavaScript</h3>
-                <p>Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Lorem ipsum dolor sit amet, consectetuer adipiscing elit ligula eget dolor.</p>
-                <div class="code-block">
-                    <pre><code class="language-javascript">
-                        if( awesome ){
-                        console.log('This is Awesome');
-                        }else{
-                        $('body').addClass('give-me-awesome');
-                        }
-                    </code></pre>
-                </div><!--//code-block-->
-            </div><!--//block-->
-            <div class="block">
-                <h3 class="sub-title text-center">Full Documentation</h3>
-                <p>If your documentation is very long you can host the full docs page (including FAQ etc) on GitHub and provide a Call to Action button below to direct users there.</p>
-                <p class="text-center">
-                    <a class="btn btn-cta-primary" href="https://github.com/twbs/bootstrap" target="_blank">More on GitHub</a>
-                </p>
-            </div><!--//block-->
 
         </div><!--//docs-inner-->
     </div><!--//container-->
