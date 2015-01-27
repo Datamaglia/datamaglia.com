@@ -8,7 +8,8 @@
 
 
 .jumbo {
-  padding: 1%;;
+  padding: 1%;
+    margin-bottom: 15px;
 }
 
 .img-block {
@@ -129,7 +130,8 @@ pre code {
   color: #666666;
 }
 .header .logo {
-  margin: 0;
+
+    margin: 0px;
   font-size: 26px;
   padding-top: 3px;
 }
