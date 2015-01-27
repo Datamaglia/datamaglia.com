@@ -61,7 +61,7 @@
                     <li class="nav-item active white-nav"><a href="guide.html">How it works</a></li>
                     <li class="nav-item"><a href="tutorial.html">Tutorial</a></li>
                     <li class="nav-item"><a href="//docs.datamaglia.com" target="_blank">API Documentation</a></li>
-                    <li class="nav-item"><a href="/">About</a></li>
+                    <li class="nav-item"><a href="about.html">About</a></li>
                     <li class="nav-item"><a href="/">Blog</a></li>
                     <!--<li class="active nav-item sr-only"><a class="scrollto" href="#promo">Home</a></li>
                     <li class="nav-item"><a class="scrollto" href="#about">About</a></li>
@@ -89,7 +89,7 @@
 
             <div class="block">
                 <h3 class="sub-title text-center">Why your app needs recommendations</h3>
-                <p>INSERT PREDICTED EDGE GRAPHIC</p>
+                <!-- <p>INSERT PREDICTED EDGE GRAPHIC</p> -->
                 <p>It is undeniable that apps are becoming <i>smarter</i>: mapping apps now show us traffic information, shopping apps predict which products we might want to purchase, and music apps show us new songs we might enjoy based on our previous listening habits. Users have come to expect these <i>smart</i> features in apps and the lack of these predictive features can often result in a missed download.</p>
                 <p>Providing your users with personalized recommendations can improve user engagement with your app and provide features your users will appreciate. Users are more likely to interact with a personalized experience tailored to their interests and preferences.</p>
                 <ul class="list-unstyled">
@@ -108,13 +108,15 @@
             <div class="block">
                 <h3 class="sub-title text-center">How we generate recommendations</h3>
 
-                <p>By modeling </p>
+                <!-- <p>By modeling </p> -->
                 <h4 class="sub-title text-center">Graph data model</h4>
                 <p>By modeling user preferences as a graph we are able to express user preferences in a concise and efficient format.</p>
-                <p>INSERT GRAPHIC OF USER PREFERNCES EXPRESSED AS A GRAPH</p>
-                <h4 class="sub-title text-center">Collaborative filtering</h4>
+                <p>This data model allows us to take advantage of complex algorithms for generating personalized recommendations. To learn more, read about <a href="http://en.wikipedia.org/wiki/Collaborative_filtering">Collaborative Filtering.</a></p>
+                <!--<h4 class="sub-title text-center">Collaborative filtering</h4> -->
 
                 <h4 class="sub-title text-center">User defined data model</h4>
+                <img src="/assets/images/subgraph.png" class="img-responsive img-block">
+                <p>Unlike other recommender systems which force the user to constrain their data to an inflexible data model, Datamaglia allows the user to define their data model by creating any number of <strong>subgraphs</strong>. Subgraph is the term we use to describe a piece of a user's data model that will be used to generate recommendations. You can learn more about subgraphs in our <a href="tutorial.html">Tutorial</a>.</p>
             </div><!--//block-->
 
             <div class="block">
