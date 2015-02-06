@@ -88,171 +88,452 @@
             <h2 class="title text-center">Get Started wth Datamaglia Recommendations</h2>
             <p>This tutorial will show how Datamaglia Recommendations can be used to enhance user engagement in a photo browsing app. We will show how to request a Datamaglia API key, how to configure your Datamaglia application and how to use the Datamaglia Recommendations API to generate personalized recommendations and show these to the user.</p>
             <div class="block">
-                <h3 class="sub-title text-center">Introducing Picmaglia</h3>
-                <p>This tutorial will assume we are a developer with a basic photo browsing app and how we can add personalized recommendations.</p>
-                <h4>Overview</h4>
-                <img class="img-responsive img-block" src="assets/images/picmaglia.png">
-                <p>These are the basic features that we've already implemented for Picmaglia. Users are able to</p>
-                <ul class="list-unstyled">
-                    <li><strong>Browse photos:</strong> view the most recently shared photos.</li>
-                    <li><strong>Favorite photos:</strong> select photos they like and save these for viewing later.</li>
-                    <li><strong>View favorited photos: see all the photos that user has favorited.</strong> </li>
-                    <li><strong>View recommended photos</strong> What photos is this user likely to be interested in?</li>
-                </ul>
 
-                <p>These features are great, but we'd like to increase user engagement with our app by adding a way for users to discover new photos (other than by viewing recent photos). We'd like to be able to suggest new photos to users based on the photos they have previously favorited. </p>
-                <img class="img-responsive img-block" src="assets/images/picmaglia_detail.png">
+
+                <div class="text_cell_render border-box-sizing rendered_html">
+                    <h1 id="datamaglia-demo">Datamaglia Demo</h1>
+                    <p>Below we will briefly introduce the Datamaglia API and demonstrate how it can be used to generate recommendations. We will use Python because it is readable, and widely-known, you can use any language that can make HTTP requests.</p>
+                    <p>You'll need to install the Requests library to use this notebook, which you can do with a quick <code>pip install requests</code>.</p>
+                </div>
+                <div class="cell border-box-sizing code_cell vbox">
+                    <div class="input hbox">
+                        <div class="prompt input_prompt">
+                            In&nbsp;[1]:
+                        </div>
+                        <div class="input_area box-flex1">
+                            <div class="highlight"><pre><span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">json</span>
+</pre></div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="text_cell_render border-box-sizing rendered_html">
+                    <p>In order to use the API, we need to first create an application, a subgraph (to describe the data model), and an API token (to allow us access). We've created these already for you to use with this notebook, but if you want to create your own you'll need to sign up for a Datamaglia account.</p>
+                    <p>Below you can see an exmple of how to create a subgraph. The subgraph tells us what your data look like. Each subgraph has three components: a source, a target, and a relationship. These are explained briefly below.</p>
+                    <div class="figure">
+                        <img src="/assets/images/create-subgraph.png" alt="Create subgraph" class="img-responsive"/><p class="caption">Create subgraph</p>
+                    </div>
+                    <p>A source is the entity (almost always a person) for which you want to generate recommendations. This is probably a user of your product or service, but it might be someone else. The source usually takes some kind of action while using your application that informs us about his or her preferences. This could be &quot;starring&quot; a piece of content, making a social connection with another person, or even just visiting a web page.</p>
+                    <p>A relationship is the how we track these user preferences. For example, if your application allows users to &quot;star&quot; pieces of content, we might use the &quot;liked&quot; or &quot;followed&quot; relationships because the action taken by the user indicates to us that he or she likes that content or wants to be updated about it in the future.</p>
+                    <p>The target is what the source can express preferences about. In the example above, this would be the content that can be &quot;starred&quot;.</p>
+                    <p>The source and target each have a PID. This just tells us how you plan to identify these pieces of the subgraph. For instance, you might identify users by an email address, or a Twitter handle, or you might identify a piece of content using its URL. In this example, we're using the URL for both since Reddit users each have a profile page.</p>
+                    <p>Now that we have a subgraph created, we need an API key (called an Application Token). This allows our application to access the Datamaglia service. You can create read (generate recommendations), write (insert data from which recommendations can be generated), or read/write (both) tokens. This lets you customize the level of access that a particular piece of the application should have. For example, your backend server might need read/write, but your frontend mobile application might only need read permission.</p>
+                    <div class="figure">
+                        <img src="assets/images/finished.png" alt="Finished" class="img-responsive"/><p class="caption">Finished</p>
+                    </div>
+                    <p>There are two important values that come from this process. First, you'll need the subgraph ID in order to make requests to the Datamaglia API. This tells us which subgraph to insert data into and which subgraph we should use for generating a recommendation. Second, you'll need a token that has appropriate access.</p>
+                    <p>Note that the subgraph ID and token values above are different than the ones used here, that isn't a problem, we re-created the application since the screenshots were taken.</p>
+                </div>
+                <div class="cell border-box-sizing code_cell vbox">
+                    <div class="input hbox">
+                        <div class="prompt input_prompt">
+                            In&nbsp;[2]:
+                        </div>
+                        <div class="input_area box-flex1">
+                            <div class="highlight"><pre><span class="n">SUBGRAPH_ID</span>  <span class="o">=</span> <span class="s">&#39;066c7f799b724798a60b96b2097de7a4&#39;</span>
+<span class="n">API_KEY</span> <span class="o">=</span> <span class="s">&#39;3e97b03d83f045869308f71e772967e2&#39;</span>
+</pre></div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="text_cell_render border-box-sizing rendered_html">
+                    <p>For convenience, we'll define some values to use later. These are just for convenience.</p>
+                </div>
+                <div class="cell border-box-sizing code_cell vbox">
+                    <div class="input hbox">
+                        <div class="prompt input_prompt">
+                            In&nbsp;[3]:
+                        </div>
+                        <div class="input_area box-flex1">
+                            <div class="highlight"><pre><span class="n">BASE_URL</span> <span class="o">=</span> <span class="s">&#39;https://api.datamaglia.com/v1{}&#39;</span>
+<span class="n">SRC_URL</span> <span class="o">=</span> <span class="n">BASE_URL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;/subgraphs/&#39;</span> <span class="o">+</span> <span class="n">SUBGRAPH_ID</span> <span class="o">+</span> <span class="s">&#39;/data/sources/&#39;</span><span class="p">)</span>
+<span class="n">TARG_URL</span> <span class="o">=</span> <span class="n">BASE_URL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;/subgraphs/&#39;</span> <span class="o">+</span> <span class="n">SUBGRAPH_ID</span> <span class="o">+</span> <span class="s">&#39;/data/targets/&#39;</span><span class="p">)</span>
+<span class="n">REL_URL</span> <span class="o">=</span> <span class="n">BASE_URL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;/subgraphs/&#39;</span> <span class="o">+</span> <span class="n">SUBGRAPH_ID</span> <span class="o">+</span> <span class="s">&#39;/data/relationships/&#39;</span><span class="p">)</span>
+<span class="n">REC_URL</span> <span class="o">=</span> <span class="n">BASE_URL</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;/recommendations/subgraphs/&#39;</span> <span class="o">+</span> <span class="n">SUBGRAPH_ID</span> <span class="o">+</span> <span class="s">&#39;/member&#39;</span><span class="p">)</span>
+<span class="n">HEADERS</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;Auth-Token&#39;</span><span class="p">:</span> <span class="n">API_KEY</span><span class="p">,</span> <span class="s">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s">&#39;application/json&#39;</span><span class="p">}</span>
+</pre></div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="text_cell_render border-box-sizing rendered_html">
+                    <p>First, let's create some (fake) Reddit users. We've selected random names, any resemblence to actual users is purely coincidental.</p>
+                </div>
+                <div class="cell border-box-sizing code_cell vbox">
+                    <div class="input hbox">
+                        <div class="prompt input_prompt">
+                            In&nbsp;[7]:
+                        </div>
+                        <div class="input_area box-flex1">
+                            <div class="highlight"><pre><span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;miguel&#39;</span><span class="p">,</span> <span class="s">&#39;adam&#39;</span><span class="p">,</span> <span class="s">&#39;julie&#39;</span><span class="p">,</span> <span class="s">&#39;steve&#39;</span><span class="p">,</span> <span class="s">&#39;caroline&#39;</span><span class="p">,</span> <span class="s">&#39;ingrid&#39;</span><span class="p">]</span>
+<span class="n">entities</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="s">&#39;https://www.reddit.com/u/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+        <span class="s">&#39;properties&#39;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span><span class="s">&#39;key&#39;</span><span class="p">:</span> <span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;value&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span>
+<span class="p">]</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;entities&#39;</span><span class="p">:</span> <span class="n">entities</span><span class="p">}</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">SRC_URL</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">HEADERS</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+<span class="k">print</span> <span class="n">resp</span> <span class="c"># Should be 204</span>
+</pre></div>
+
+                        </div>
+                    </div>
+
+                    <div class="vbox output_wrapper">
+                        <div class="output vbox">
+
+
+                            <div class="hbox output_area"><div class="prompt"></div>
+                                <div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>
+&lt;Response [204]&gt;
+
+</pre>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="text_cell_render border-box-sizing rendered_html">
+                    <p>Now we have inserted some users. Note that we were able to insert several at once, this makes things a little quicker and more flexible, but we could have inserted them one at a time too. A 204 response means everything worked, so now let's add some subreddits that these users might follow.</p>
+                </div>
+                <div class="cell border-box-sizing code_cell vbox">
+                    <div class="input hbox">
+                        <div class="prompt input_prompt">
+                            In&nbsp;[9]:
+                        </div>
+                        <div class="input_area box-flex1">
+                            <div class="highlight"><pre><span class="c"># Now, let&#39;s add some (real) subreddits.</span>
+<span class="n">subreddits</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;programming&#39;</span><span class="p">,</span> <span class="s">&#39;askreddit&#39;</span><span class="p">,</span> <span class="s">&#39;askscience&#39;</span><span class="p">,</span> <span class="s">&#39;books&#39;</span><span class="p">,</span> <span class="s">&#39;dataisbeautiful&#39;</span><span class="p">]</span>
+<span class="n">entities</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="s">&#39;https://www.reddit.com/r/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">subreddit</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">for</span> <span class="n">subreddit</span> <span class="ow">in</span> <span class="n">subreddits</span>
+<span class="p">]</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;entities&#39;</span><span class="p">:</span> <span class="n">entities</span><span class="p">}</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">TARG_URL</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">HEADERS</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+<span class="k">print</span> <span class="n">resp</span> <span class="c"># Should be 204</span>
+</pre></div>
+
+                        </div>
+                    </div>
+
+                    <div class="vbox output_wrapper">
+                        <div class="output vbox">
+
+
+                            <div class="hbox output_area"><div class="prompt"></div>
+                                <div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>
+&lt;Response [204]&gt;
+
+</pre>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="text_cell_render border-box-sizing rendered_html">
+                    <p>Great! Now we have some users, and some subreddits, so it is time to link them together with relationships. Notice that we didn't have to add any relationships. This is by design. There might very well be content or people in your application that haven't been &quot;liked&quot; or &quot;followed&quot; or &quot;purchased&quot; by anyone... yet. But once one of those things happens, we want to be ready.</p>
+                </div>
+                <div class="cell border-box-sizing code_cell vbox">
+                    <div class="input hbox">
+                        <div class="prompt input_prompt">
+                            In&nbsp;[14]:
+                        </div>
+                        <div class="input_area box-flex1">
+                            <div class="highlight"><pre><span class="c"># Now let&#39;s make some of our users follow some subreddits. This is what will allow us to generate recommendations later.</span>
+<span class="n">follows</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s">&#39;miguel&#39;</span><span class="p">,</span> <span class="s">&#39;programming&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;miguel&#39;</span><span class="p">,</span> <span class="s">&#39;askscience&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;miguel&#39;</span><span class="p">,</span> <span class="s">&#39;books&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;adam&#39;</span><span class="p">,</span> <span class="s">&#39;programming&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;adam&#39;</span><span class="p">,</span> <span class="s">&#39;dataisbeautiful&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;adam&#39;</span><span class="p">,</span> <span class="s">&#39;books&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;julie&#39;</span><span class="p">,</span> <span class="s">&#39;books&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;julie&#39;</span><span class="p">,</span> <span class="s">&#39;askscience&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;steve&#39;</span><span class="p">,</span> <span class="s">&#39;askscience&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;steve&#39;</span><span class="p">,</span> <span class="s">&#39;askreddit&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;caroline&#39;</span><span class="p">,</span> <span class="s">&#39;books&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;caroline&#39;</span><span class="p">,</span> <span class="s">&#39;askreddit&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;ingrid&#39;</span><span class="p">,</span> <span class="s">&#39;programming&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;ingrid&#39;</span><span class="p">,</span> <span class="s">&#39;dataisbeautiful&#39;</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="n">entities</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s">&#39;weight&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+        <span class="s">&#39;source&#39;</span><span class="p">:</span> <span class="s">&#39;https://www.reddit.com/u/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+        <span class="s">&#39;target&#39;</span><span class="p">:</span> <span class="s">&#39;https://www.reddit.com/r/{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">subreddit</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">for</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">subreddit</span><span class="p">)</span> <span class="ow">in</span> <span class="n">follows</span>
+<span class="p">]</span>
+<span class="n">payload</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;entities&#39;</span><span class="p">:</span> <span class="n">entities</span><span class="p">}</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">REL_URL</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">HEADERS</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span>
+<span class="k">print</span> <span class="n">resp</span> <span class="c"># Should be 204</span>
+</pre></div>
+
+                        </div>
+                    </div>
+
+                    <div class="vbox output_wrapper">
+                        <div class="output vbox">
+
+
+                            <div class="hbox output_area"><div class="prompt"></div>
+                                <div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>
+&lt;Response [204]&gt;
+
+</pre>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="text_cell_render border-box-sizing rendered_html">
+                    <p>Look at all our happy Redditors! Now let's find out which other subreddits some of our users would enjoy following!</p>
+                </div>
+                <div class="cell border-box-sizing code_cell vbox">
+                    <div class="input hbox">
+                        <div class="prompt input_prompt">
+                            In&nbsp;[15]:
+                        </div>
+                        <div class="input_area box-flex1">
+                            <div class="highlight"><pre><span class="c"># Now let&#39;s see which subreddits might interest Steve.</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">REC_URL</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="s">&#39;https://www.reddit.com/u/steve&#39;</span><span class="p">,</span> <span class="s">&#39;limit&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;Auth-Token&#39;</span><span class="p">:</span> <span class="n">API_KEY</span><span class="p">})</span>
+<span class="k">print</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+                        </div>
+                    </div>
+
+                    <div class="vbox output_wrapper">
+                        <div class="output vbox">
+
+
+                            <div class="hbox output_area"><div class="prompt"></div>
+                                <div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>
+{
+    &quot;entities&quot;: [
+        {
+            &quot;score&quot;: 0.5833333333333333,
+            &quot;relationship&quot;: {
+                &quot;source&quot;: {
+                    &quot;id&quot;: {
+                        &quot;key&quot;: &quot;url&quot;,
+                        &quot;value&quot;: &quot;https://www.reddit.com/u/steve&quot;
+                    },
+                    &quot;properties&quot;: [
+                        {
+                            &quot;key&quot;: &quot;name&quot;,
+                            &quot;value&quot;: &quot;steve&quot;
+                        }
+                    ]
+                },
+                &quot;type&quot;: &quot;follows&quot;,
+                &quot;target&quot;: {
+                    &quot;id&quot;: {
+                        &quot;key&quot;: &quot;url&quot;,
+                        &quot;value&quot;: &quot;https://www.reddit.com/r/books&quot;
+                    },
+                    &quot;properties&quot;: []
+                },
+                &quot;weight&quot;: 0.0
+            }
+        },
+        {
+            &quot;score&quot;: 0.25,
+            &quot;relationship&quot;: {
+                &quot;source&quot;: {
+                    &quot;id&quot;: {
+                        &quot;key&quot;: &quot;url&quot;,
+                        &quot;value&quot;: &quot;https://www.reddit.com/u/steve&quot;
+                    },
+                    &quot;properties&quot;: [
+                        {
+                            &quot;key&quot;: &quot;name&quot;,
+                            &quot;value&quot;: &quot;steve&quot;
+                        }
+                    ]
+                },
+                &quot;type&quot;: &quot;follows&quot;,
+                &quot;target&quot;: {
+                    &quot;id&quot;: {
+                        &quot;key&quot;: &quot;url&quot;,
+                        &quot;value&quot;: &quot;https://www.reddit.com/r/programming&quot;
+                    },
+                    &quot;properties&quot;: []
+                },
+                &quot;weight&quot;: 0.0
+            }
+        }
+    ]
+}
+
+</pre>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="cell border-box-sizing code_cell vbox">
+                    <div class="input hbox">
+                        <div class="prompt input_prompt">
+                            In&nbsp;[16]:
+                        </div>
+                        <div class="input_area box-flex1">
+                            <div class="highlight"><pre><span class="c"># Or Ingrid. Note that we recommend Ingrid check out r/books because of her similiarity with Adam,</span>
+<span class="c"># the two of them are very similar, so this makes sense.</span>
+<span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">REC_URL</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="s">&#39;https://www.reddit.com/u/ingrid&#39;</span><span class="p">,</span> <span class="s">&#39;limit&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">},</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;Auth-Token&#39;</span><span class="p">:</span> <span class="n">API_KEY</span><span class="p">})</span>
+<span class="k">print</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">),</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+
+                        </div>
+                    </div>
+
+                    <div class="vbox output_wrapper">
+                        <div class="output vbox">
+
+
+                            <div class="hbox output_area"><div class="prompt"></div>
+                                <div class="box-flex1 output_subarea output_stream output_stdout">
+<pre>
+{
+    &quot;entities&quot;: [
+        {
+            &quot;score&quot;: 0.9166666666666666,
+            &quot;relationship&quot;: {
+                &quot;source&quot;: {
+                    &quot;id&quot;: {
+                        &quot;key&quot;: &quot;url&quot;,
+                        &quot;value&quot;: &quot;https://www.reddit.com/u/ingrid&quot;
+                    },
+                    &quot;properties&quot;: [
+                        {
+                            &quot;key&quot;: &quot;name&quot;,
+                            &quot;value&quot;: &quot;ingrid&quot;
+                        }
+                    ]
+                },
+                &quot;type&quot;: &quot;follows&quot;,
+                &quot;target&quot;: {
+                    &quot;id&quot;: {
+                        &quot;key&quot;: &quot;url&quot;,
+                        &quot;value&quot;: &quot;https://www.reddit.com/r/books&quot;
+                    },
+                    &quot;properties&quot;: []
+                },
+                &quot;weight&quot;: 0.0
+            }
+        },
+        {
+            &quot;score&quot;: 0.25,
+            &quot;relationship&quot;: {
+                &quot;source&quot;: {
+                    &quot;id&quot;: {
+                        &quot;key&quot;: &quot;url&quot;,
+                        &quot;value&quot;: &quot;https://www.reddit.com/u/ingrid&quot;
+                    },
+                    &quot;properties&quot;: [
+                        {
+                            &quot;key&quot;: &quot;name&quot;,
+                            &quot;value&quot;: &quot;ingrid&quot;
+                        }
+                    ]
+                },
+                &quot;type&quot;: &quot;follows&quot;,
+                &quot;target&quot;: {
+                    &quot;id&quot;: {
+                        &quot;key&quot;: &quot;url&quot;,
+                        &quot;value&quot;: &quot;https://www.reddit.com/r/askscience&quot;
+                    },
+                    &quot;properties&quot;: []
+                },
+                &quot;weight&quot;: 0.0
+            }
+        }
+    ]
+}
+
+</pre>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="text_cell_render border-box-sizing rendered_html">
+                    <p>A couple notes about the results here are in order. First, the &quot;score&quot; reflects the strength of the recommendation. Higher values mean more relevant matches. We're still fiddling with how we compute the score, so stay tuned, but the overall idea won't change. Next, we return all three parts of the subgraph for each recommendation. This is because you, as the developer, might want to use the information in your UI.</p>
+                    <p>Thanks for reading through this demo and tutorial! We hope to improve it as we continue to build out the Datamaglia service. If you have questions (or, even better, suggestions) you can send us an email at support@datamaglia.com.</p>
+                </div>
+                <div class="cell border-box-sizing code_cell vbox">
+                    <div class="input hbox">
+                        <div class="prompt input_prompt">
+                            In&nbsp;[]:
+                        </div>
+                        <div class="input_area box-flex1">
+                            <div class="highlight"><pre>
+</pre></div>
+
+                        </div>
+                    </div>
+
+                </div>
 
 
 
             </div><!--//block-->
 
-            <div class="block">
-                <h3 class="sub-title text-center">Configure app in Datamaglia Console</h3>
-                <p>The first thing we'll need to do is create a Datamaglia API token for our app. We do this in the <a href="http://console.datamaglia.com" target="_blank">Datamaglia Managment Console</a>. You'll need an invite code to create an account on the console. If you haven't signed up yet, you can sign up here for early access to the Datamaglia platform. </p>
-
-                <img class="img-responsive img-block" src="assets/images/console_1.png">
-               <!-- <img class="img-responsive img-block" src="assets/images/console_2.png"> -->
-
-                <h4 class="sub-title">Create an application</h4>
-
-                <p>After logging into the management console we must first create an application.</p>
-                <img class="img-responsive img-block" src="assets/images/console_3.png">
-                <p>Each developer can create multiple applications. Here we will create an application called Picmaglia to represent our photobrowsing app.</p>
-                <img class="img-responsive img-block" src="assets/images/console_4.png">
-                <img class="img-responsive img-block" src="assets/images/console_5.png">
-
-                <h4 class="sub-title">Create a subgraph</h4>
-                <p>To make use of Datamaglia Recommendations each application must have at least one <strong>subgraph</strong>. As explained in the <a href="guide.html">How it works</a> section, Datamaglia models your application data as a graph. This allows us to build a powerful flexible representation of user preferences from which we can generate personalized recommendations. A subgraph defines the datatypes for a particlar (Source -[RELATIONSHIP]-> Target) combination.</p>
-                <img class="img-responsive img-block" src="assets/images/subgraph.png">
-                <p></p>
-                <p>The Source node of the subgraph is the data type of the object initating an action toward another object. With Picmaglia we are interested in using data about what photos a user has likes, therefore <i>User</i> is the source type for our subgraph. We will use a relationship type of <i>LIKES</i> to represent the action of favoriting. Finally, the Target type is <i>Photo</i> since that is the object the user is favoriting. </p>
-
-                <img class="img-responsive img-block" src="assets/images/console_6.png">
-
-                <p>It is important to note here that recommendations are generated for the <strong>target</strong> node. This is always the case, since we are effectively predicting edges in the graph to generate recommendations.</p>
-
-                <img class="img-responsive img-block" src="assets/images/console_7.png">
-
-
-                <h4 class="sub-title">Create an API token</h4>
-
-
-                <img class="img-responsive img-block" src="assets/images/console_8.png">
-
-                <p>Now we need to create an API key to allow us to make authenticated requests against the Datamaglia API. We can choose which permissions to grant the API token. It is important to note that each request made to the Datamaglia API must contain this API Token in the request header. View the <a href="//docs.datamaglia.com">API documentation</a> for more information.</p>
-                <img class="img-responsive img-block" src="assets/images/console_9.png">
-                <!-- <img class="img-responsive img-block" src="assets/images/console_10.png"> -->
-
-            </div>
-
-            <div class="block">
-                <h3 class="sub-title text-center">Insert data</h3>
-                <p>Now that we've configured our application, subgraph and API token we can start using the Datamaglia API. </p>
-                <p>In order to generate recommendations for our users we first need to tell the Datamaglia Recommendations API about our user preferences. We do this by posting data describing the (User)-[LIKES]->(Photo) subgraph:</p>
-                <div class="code-block">
-                    <pre><code class="language-javascript">
-// POST /applications/{app}/subgraphs/{subgraph}/data/relationships/
-// BODY:
-{
-    "entities": [
-        {
-            "type": "Likes",
-            "weight": 1.0,
-            "source": {
-                "id": {
-                    "email": "johndoe@example.com"
-                }
-            },
-            "target": {
-                "id": {
-                    "imdb": "tt0398286"
-                }
-            }
-        },
-        {
-            "type": "Likes",
-            "source": {
-                "id": {
-                    "email": "johndoe@example.com"
-                }
-            },
-            "target": {
-                "id": {
-                    "imdb": "tt1217209"
-                }
-            }
-        }
-    ]
-}
-                    </code></pre>
-            </div>
-
-            <div class="block">
-                <h3 class="sub-title text-center">Query for recommendations</h3>
-                <p>Find some relevant photos</p>
-                <div class="code-block">
-                    <pre><code class="language-javascript">
-// POST /recommendations/{app}/subgraphs/{subgraph}/member{?limit,id}
-
-// RESPONSE
-{
-    "entities": [
-        {
-            "relationship": {
-                "type": "Likes",
-                "weight": 0.76,
-                "source": {
-                },
-                "target": {
-                    "id": {
-                        "imdb": "tt0398286"
-                    },
-                    "properties": {
-                        title: "Tangled"
-                    }
-                }
-            }
-        },
-        {
-            "relationship": {
-                "type": "Likes",
-                "weight": 0.89,
-                "source": {
-                },
-                "target": {
-                    "id": {
-                        "imdb": "tt1217209",
-                    },
-                    "properties": {
-                        "title": "Brave"
-                    }
-                }
-            }
-        }
-    ]
-}
-                    </code></pre>
-                </div>
-            </div>
-
-            <div class="block">
-                <h3 class="sub-title text-center">Coming soon</h3>
-                <p>We've seen how to get started with a basic Datamaglic Recommender system for our photo browsing app. Next we will examine:</p>
-                <ul class="list-unstyled">
-                    <li><strong>More complex data model</strong></li>
-                    <li><strong>Recommending Users to follow</strong></li>
-                    <li><strong>Boosting recommendations with location data</strong></li>
-                </ul>
-            </div>
-
-
-
-
 
         </div><!--//docs-inner-->
     </div><!--//container-->
 </section><!--//features-->
+
+<!-- ******LICENSE****** -->
+<section id="license" class="license section">
+    <div class="container">
+        <div class="license-inner">
+            <h2 class="title text-center">Sign up for early access</h2>
+            <div class="info">
+                <p>The Datamaglia platform is currently in initial limited user testing. If you'd like to experience the power of the platform and help us work out the kinks, let's make it happen!</p>
+
+            </div><!--//info-->
+            <div class="cta-container">
+                <div class="speech-bubble text-center">
+                    <p class="intro">Enter you email below and we will be in touch to help you get started with the Datamaglia platform.</p>
+                    <form action="//TRVRSL.us8.list-manage.com/subscribe/post?u=c1685c23ebbb541a36b2ed456&amp;id=af2c93981e" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" class="validate pure-form pure-form-stacked" target="_blank" novalidate="">
+                        <fieldset>
+                            <input style="color:#080808;" class = "input-lg" id="email" type="email" name="EMAIL" placeholder="Your Email">
+                            <input type="submit" class="btn btn-lg btn-cta-primary" value="Sign up">
+                        </fieldset>
+                        <!-- real people should not fill this in and expect
+                        good things - do not remove this or risk form bot
+                        signups-->
+                        &nbsp;&nbsp;&nbsp;&nbsp;<div style="position: absolute; left: -5000px;"><input type="text" name="b_c1685c23ebbb541a36b2ed456_af2c93981e" tabindex="-1" value=""></div>
+                    </form>
+                </div><!--//speech-bubble-->
+
+            </div><!--//cta-container-->
+        </div><!--//license-inner-->
+    </div><!--//container-->
+</section><!--//how-->
 
 
 <!-- ******CONTACT****** -->
